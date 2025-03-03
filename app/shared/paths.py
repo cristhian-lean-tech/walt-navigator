@@ -4,6 +4,10 @@ PATHS = [
    "description": "Quisiera poder solicitar un libro,bono para libro o recurso educativo"
 },
 {
+   "path": "/services?request=VACATION",
+   "description": "Quiero solicitar mis vacaciones"
+},
+{
    "path": "/services?request=PTO",
    "description": "Quisiera poder solicitar mi dia de la familia. Solicitar un tiempo libre sin afectar mis vacaciones"
 },

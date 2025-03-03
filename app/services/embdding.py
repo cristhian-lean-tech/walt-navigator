@@ -65,14 +65,12 @@ class EmbeddingService:
             n_results=2
          )
 
-         print("***", results)
-
          output = []
          for id_value, metadata, distance in zip(results["ids"][0], results["metadatas"][0], results["distances"][0]):
             output.append({
                   "path": id_value,
                   "description": metadata["description"],
-                  "score": distance
+                  "score": round((1-distance), 2)
             })
          
          return [output for output in output]

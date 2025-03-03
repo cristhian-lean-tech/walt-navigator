@@ -9,3 +9,4 @@ class NavigationDTO:
 class NavigationResponseDTO:
     path: str
     description: str
+    score: float
