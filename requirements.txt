@@ -1,7 +1,7 @@
 fastapi
 uvicorn
 chromadb
-pydantic
+pydantic<2
 numpy
 python-dotenv
 openai
