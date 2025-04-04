@@ -1,11 +1,31 @@
 PATHS = [
   {
    "path": "/services?request=EDUCATION",
-   "description": "Quisiera poder solicitar un libro,bono para libro o recurso educativo"
+   "description": "Quisiera poder solicitar un libro,bono para libro o recurso educativo",
+   "parametros": [
+      {
+          "id": "nombre",
+          "text": "nombre del libro o recurso educativo"
+      },
+      {
+          "id": "precio",
+          "text": "precio del libro o recurso educativo"
+      }
+   ]
 },
 {
    "path": "/services?request=VACATION",
-   "description": "Quiero solicitar mis vacaciones"
+   "description": "Quiero solicitar mis vacaciones",
+   "parametros": [
+      {
+          "id": "start_date",
+          "text": "fecha de inicio de sus vacaciones"
+      },
+      {
+          "id": "end_date",
+          "text": "fecha de fin de sus vacaciones"
+      }
+   ]
 },
 {
    "path": "/services?request=PTO",

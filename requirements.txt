@@ -5,3 +5,6 @@ pydantic<2
 numpy
 python-dotenv
 openai
+numpy
+spacy==3.7.2
+unidecode

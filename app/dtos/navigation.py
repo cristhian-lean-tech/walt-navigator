@@ -10,3 +10,7 @@ class NavigationResponseDTO:
     path: str
     description: str
     score: float
+
+@dataclass
+class ConversationResponseDTO:
+    message: str

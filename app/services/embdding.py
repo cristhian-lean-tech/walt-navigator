@@ -5,6 +5,7 @@ from app.core.config import settings
 from app.db.chroma import chroma_client 
 from app.shared.const import CollectionName
 
+
 class EmbeddingService:
 
    def exists_collection(self, collection_name: CollectionName):
@@ -22,9 +23,7 @@ class EmbeddingService:
          collection = chroma_client.create_collection(collection_name.value)
       
       return collection
-
    
-
    def generate_embedding(self, text: str):
       response = openai.embeddings.create(
            model=settings.EMBEDDING_MODEL,           
