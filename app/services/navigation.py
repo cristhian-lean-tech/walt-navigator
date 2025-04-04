@@ -1,11 +1,12 @@
 import json
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Any
 from numpy import dot
 from numpy.linalg import norm
 
 from app.shared.const import CollectionName
 from .embdding import EmbeddingService
 from .text_normalizer import TextNormalizer
+from .conversation_manager import ConversationManager
 from app.shared.paths import PATHS
 from app.shared.forms import FORMS
 
@@ -13,33 +14,99 @@ class NavigationService():
     def __init__(self):
         self.embedding_service = EmbeddingService()
         self.text_normalizer = TextNormalizer()
+        self.conversation_manager = ConversationManager()
         self.benefit_embeddings = {}
         self.benefit_synonyms = self._init_benefit_synonyms()
         self._init_benefit_embeddings()  # Inicializar embeddings al crear la instancia
 
-    def suggest_routes(self, content: str, role: str) -> any:
+    def suggest_routes(self, content: str, role: str, conversation_id: str) -> Dict[str, Any]:
         # Normalizar el texto de entrada
         normalized_content = self.text_normalizer.normalize(content)
-        print("**** 1", normalized_content)
         
-        # Obtener palabras clave
+        # Obtener el estado actual de la conversación
+        conversation_state = self.conversation_manager.get_or_create_conversation(conversation_id)
+        
+        # Si ya tenemos un beneficio, procesar el parámetro actual
+        if conversation_state.benefit:
+            return self._process_parameter_response(conversation_id, normalized_content)
+        
+        # Si no tenemos un beneficio, detectarlo
         keywords = self.text_normalizer.get_keywords(normalized_content)
-        print("**** 3", keywords)
-        
-        # Buscar en la base de datos vectorial
-        result = self.embedding_service.search_text(normalized_content, CollectionName.NAVIGATION)
-        print("**** 4", result)
-
-        # Detectar beneficio usando múltiples métodos
         detected_benefit = self._detect_benefit_combined(normalized_content, keywords)
-        print("**** 5", detected_benefit)
         
         if detected_benefit:
-            return {"message": f"Great! You're requesting {detected_benefit}. Let's start. When would you like to begin?"}
-
-        print("**** 6")
+            # Inicializar la conversación con el beneficio detectado
+            self.conversation_manager.update_conversation(
+                conversation_id, 
+                benefit=detected_benefit
+            )
+            
+            # Obtener el primer parámetro requerido
+            next_parameter = self.conversation_manager.get_next_parameter(conversation_id)
+            if next_parameter:
+                question = FORMS[detected_benefit][next_parameter]
+                return {
+                    "message": f"Great! You're requesting {detected_benefit}. {question}",
+                    "conversation_id": conversation_id,
+                    "current_parameter": next_parameter,
+                    "benefit": detected_benefit
+                }
+        
+        # Si no se detectó un beneficio, buscar en la base de datos vectorial
+        result = self.embedding_service.search_text(normalized_content, CollectionName.NAVIGATION)
         return result
-    
+
+    def _process_parameter_response(self, conversation_id: str, content: str) -> Dict[str, Any]:
+        """
+        Procesa la respuesta del usuario para el parámetro actual.
+        """
+        state = self.conversation_manager.get_or_create_conversation(conversation_id)
+        current_parameter = state.current_parameter or self.conversation_manager.get_next_parameter(conversation_id)
+        
+        if not current_parameter:
+            return {
+                "message": "I'm not sure what information you're providing. Could you please clarify?",
+                "conversation_id": conversation_id,
+                "benefit": state.benefit
+            }
+        
+        # Actualizar el parámetro con la respuesta del usuario
+        self.conversation_manager.update_conversation(
+            conversation_id,
+            parameter=current_parameter,
+            value=content
+        )
+        
+        # Verificar si la conversación está completa
+        if self.conversation_manager.is_conversation_complete(conversation_id):
+            summary = self.conversation_manager.get_conversation_summary(conversation_id)
+            return {
+                "message": f"Perfect! I have all the information needed for your {summary['benefit']} request:\n" + 
+                          "\n".join([f"- {param}: {value}" for param, value in summary['parameters'].items()]) +
+                          "\nWould you like to submit this request?",
+                "conversation_id": conversation_id,
+                "summary": summary,
+                "benefit": summary['benefit'],
+                "is_complete": True
+            }
+        
+        # Obtener el siguiente parámetro
+        next_parameter = self.conversation_manager.get_next_parameter(conversation_id)
+        if next_parameter:
+            question = FORMS[state.benefit][next_parameter]
+            return {
+                "message": question,
+                "conversation_id": conversation_id,
+                "current_parameter": next_parameter,
+                "benefit": state.benefit
+            }
+        
+        return {
+            "message": "I'm not sure what to ask next. Could you please clarify?",
+            "conversation_id": conversation_id,
+            "benefit": state.benefit
+        }
+
     def init_database(self):
         databseWasInitialized = self.embedding_service.exists_collection(CollectionName.NAVIGATION)
         if databseWasInitialized:
