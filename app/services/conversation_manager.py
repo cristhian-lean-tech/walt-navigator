@@ -14,8 +14,13 @@ class ConversationManager:
         self.conversations: Dict[str, ConversationState] = {}
 
     def get_or_create_conversation(self, conversation_id: str) -> ConversationState:
-        if conversation_id not in self.conversations:
+        print("[INFO] conversation_id", conversation_id)
+        print("[INFO] self.conversations", self.conversations)
+        if not self.conversations[conversation_id]:
+            print("*** new chat")
             self.conversations[conversation_id] = ConversationState()
+        
+        print("*** previous chat")
         return self.conversations[conversation_id]
 
     def update_conversation(self, conversation_id: str, benefit: Optional[str] = None, 
