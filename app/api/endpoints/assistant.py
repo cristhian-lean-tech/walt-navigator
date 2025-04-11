@@ -41,6 +41,6 @@ async def navigation(message: NavigationDTO):
             user_id=conversation_id,
         )
         print(f"**** RESPONSE: ", response)
-        return {"msg": "ok", "response": response}
+        return {"msg": conversation_id, "response": response}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

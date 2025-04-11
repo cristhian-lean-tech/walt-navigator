@@ -10,3 +10,4 @@ spacy==3.7.2
 unidecode
 langchain[openai]
 langchain-community
+deep-translator
