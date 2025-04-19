@@ -9,9 +9,9 @@ class NavigationDTO:
 
 @dataclass
 class NavigationResponseDTO:
-    path: str
-    description: str
-    score: float
+    response: str
+    request_type: str
+    path: Optional[str] = None
 
 @dataclass
 class ConversationResponseDTO:
