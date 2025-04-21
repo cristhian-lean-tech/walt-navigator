@@ -69,35 +69,11 @@ class ConversationService():
         self.conversation_manager = ConversationManager()
         self.benefit_sessions = benefit_sessions
         self.init_database()
-
-    def get_user_history(self, conversation_id: str):
-        if conversation_id not in store:
-            store[conversation_id] = ConversationBufferMemory(
-                return_messages=True,
-                memory_key="chat_history",
-                input_key="user_input",
-            )
-
-        return store[conversation_id]
     
     def detect_request_type(self, content: str, user_id: str) -> Optional[str]:
         request_type = request_type_chain.invoke({"user_input":content})
 
         return request_type["text"]
-        session = self.get_user_session(user_id)
-        response = session.invoke(content)
-
-        print(f"**** RESPONSE: ", response["response"])
-        return request_type["text"], response["response"]
-
-    def get_user_session(self, user_id: str):
-        if user_id not in sessions:
-            sessions[user_id] = ConversationChain(
-                llm=ChatOpenAI(temperature=0, model="gpt-3.5-turbo", openai_api_key=os.environ.get("OPENAI_API_KEY")),
-                memory=ConversationBufferMemory(return_messages=True),
-                verbose=False
-            )
-        return sessions[user_id]
     
     def process_user_input(self, user_id: str, content: str) -> str:
         request_type = self.detect_request_type(content, user_id)
@@ -131,21 +107,6 @@ class ConversationService():
                 "response": "Lo siento, no puedo ayudarte con eso todavía 😅.",
                 request_type: request_type
             }
-    
-        current_state = user_states.get(user_id)
-
-        if current_state and current_state["intent"] != request_type:
-            # El usuario cambió de intención (empresa ➝ beneficio o viceversa)
-            user_states[user_id] = {"intent": request_type}
-        
-        if request_type == "BENEFICIO":
-            return self.handle_benefit_flow(user_id, content)
-        
-        elif request_type == "EMPRESA":
-            return chat_response  # ya viene con contexto
-        
-        else:
-            return "Lo siento, no puedo ayudarte con eso todavía 😅."
 
     def _get_benefit_config(self, content: str):
         matches = self.embedding_service.search_text(
@@ -167,53 +128,6 @@ class ConversationService():
                 return item
 
         return None
-
-    def handle_benefit_flow(self, user_id: str, content: str) -> str:
-        session = self.benefit_sessions.get(user_id)
-
-        print(f"**** SESSION: ", session)
-
-        if not session:
-            benefit_config = self._get_benefit_config(content)
-            print(f"**** BENEFIT CONFIG: ", benefit_config)
-            if not benefit_config:
-                return "¿Qué beneficio deseas solicitar? Por ejemplo: vacaciones, gimnasio, educación..."
-
-            self.benefit_sessions[user_id] = {
-                "benefit": benefit_config["description"],
-                "path": benefit_config["path"],
-                "fields": {},
-                "parametros": benefit_config.get("parametros", [])
-            }
-
-            print(f"**** BENEFIT SESSION: ", self.benefit_sessions[user_id])
-
-            if not benefit_config.get("parametros"):
-                del self.benefit_sessions[user_id]
-                return f"✅ Puedes acceder directamente a tu solicitud aquí: {benefit_config['path']}"
-
-            first_param = benefit_config["parametros"][0]
-            return f"Perfecto, estás solicitando **{benefit_config['description']}**. ¿Cuál es {first_param['text']}?"
-
-        # Continuar flujo
-        parametros = session["parametros"]
-        for param in parametros:
-            if param["id"] not in session["fields"]:
-                session["fields"][param["id"]] = content
-                break
-
-        # Verificar si falta alguno
-        faltantes = [p for p in parametros if p["id"] not in session["fields"]]
-        if faltantes:
-            siguiente = faltantes[0]
-            return f"¿Cuál es {siguiente['text']}?"
-
-        # Completo
-        summary = "\n".join([f"- **{k}**: {v}" for k, v in session["fields"].items()])
-        path = session["path"]
-        del self.benefit_sessions[user_id]
-
-        return f"✅ Aquí está tu solicitud para **{session['benefit']}**:\n{summary}\n\nPuedes enviarla desde: {path}"
 
     def init_database(self):
         databseWasInitialized = self.embedding_service.exists_collection(CollectionName.NAVIGATION)
