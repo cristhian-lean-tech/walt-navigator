@@ -39,7 +39,6 @@ async def navigation(message: NavigationDTO):
             user_id=conversation_id,
         )
 
-
         return response
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
