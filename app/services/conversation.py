@@ -96,12 +96,11 @@ class ConversationService():
 
             return response
         
-        elif request_type == "EMPRESA":
-            return {
+        return {
                 "response": "Lo siento, no puedo ayudarte con eso todavía 😅.",
-                request_type: request_type
-            }
-            
+                "path": None,
+                "request_type": request_type
+                }
 
         return {
                 "response": "Lo siento, no puedo ayudarte con eso todavía 😅.",
