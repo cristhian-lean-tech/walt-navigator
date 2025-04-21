@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 
 @dataclass
 class NavigationDTO:
@@ -11,7 +11,7 @@ class NavigationDTO:
 class NavigationResponseDTO:
     response: str
     request_type: str
-    path: Optional[str] = None
+    paths: Optional[List[str]] = None
 
 @dataclass
 class ConversationResponseDTO:

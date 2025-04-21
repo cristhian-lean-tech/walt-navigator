@@ -14,33 +14,25 @@ class ConversationManager:
         self.conversations: Dict[str, ConversationState] = {}
 
     def get_or_create_conversation(self, conversation_id: str) -> ConversationState:
-        print("[INFO] conversation_id", conversation_id)
-        print("[INFO] self.conversations", self.conversations)
         if not self.conversations[conversation_id]:
-            print("*** new chat")
             self.conversations[conversation_id] = ConversationState()
         
-        print("*** previous chat")
         return self.conversations[conversation_id]
 
     def update_conversation(self, conversation_id: str, benefit: Optional[str] = None, 
                           parameter: Optional[str] = None, value: Any = None) -> None:
         state = self.get_or_create_conversation(conversation_id)
-        print("**** 4", state.__doc__)
         
         if benefit:
-            print("*** 4.1")
             state.benefit = benefit
             state.parameters = {}
             state.current_parameter = None
         
         if parameter and value:
-            print("*** 4.2")
             state.parameters[parameter] = value
             state.current_parameter = None
         
         if parameter and not value:
-            print("*** 4.3")
             state.current_parameter = parameter
         
         state.last_updated = datetime.now()

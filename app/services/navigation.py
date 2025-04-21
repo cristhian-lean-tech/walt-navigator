@@ -136,7 +136,6 @@ class NavigationService():
         
         # Obtener el estado actual de la conversación
         conversation_state = self.conversation_manager.get_or_create_conversation(conversation_id)
-        print("**** ", conversation_state)
         
         # Si ya tenemos un beneficio, procesar el parámetro actual
         if conversation_state.benefit:

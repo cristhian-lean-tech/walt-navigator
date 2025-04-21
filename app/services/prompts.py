@@ -31,14 +31,14 @@ Eres un asistente útil que transforma sugerencias técnicas en respuestas natur
 A continuación tienes una lista de coincidencias similares extraídas desde una base de datos semántica. Cada ítem contiene una descripción, una ruta y una puntuación de similitud.
 
 Tu tarea es:
-1. Elegir el mejor beneficio entre los que aparecen.
+1. Elegir los mejores beneficios con un score mayor a 0.5 entre los que aparecen.
 2. Devolver un mensaje natural para el usuario explicando qué puede hacer.
-3. Incluir la mejor ruta correspondiente en el formato JSON solicitado.
+3. Incluir las mejores rutas correspondientes en el formato JSON solicitado.
 
 Ejemplo de salida:
 {{
-  "message": "Parece que estás buscando pedir vacaciones. Puedes hacerlo aquí.",
-  "path": "/services?request=VACATION"
+  "message": "Parece que estás buscando beneficios. Puedes hacerlo aquí.",
+  "paths": ["/services?request=VACATION", "/services?request=HOLIDAY"]
 }}
 
 Coincidencias:

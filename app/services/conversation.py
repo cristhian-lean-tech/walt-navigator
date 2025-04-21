@@ -90,7 +90,7 @@ class ConversationService():
             result = json.loads(response["text"])
             response = {
                 "response": result.get("message"),
-                "path": result.get("path"),
+                "paths": result.get("paths"),
                 "request_type": request_type
                 }            
 
@@ -101,11 +101,6 @@ class ConversationService():
                 "path": None,
                 "request_type": request_type
                 }
-
-        return {
-                "response": "Lo siento, no puedo ayudarte con eso todavía 😅.",
-                request_type: request_type
-            }
 
     def _get_benefit_config(self, content: str):
         matches = self.embedding_service.search_text(
