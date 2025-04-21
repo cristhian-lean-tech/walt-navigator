@@ -4,8 +4,13 @@ from fastapi import HTTPException
 from app.core.config import settings
 from app.db.chroma import chroma_client 
 from app.shared.const import CollectionName
+from deep_translator import GoogleTranslator
+
 
 class EmbeddingService:
+
+   def translate_to_spanish(self, text: str) -> str:
+    return GoogleTranslator(source='auto', target='es').translate(text)
 
    def exists_collection(self, collection_name: CollectionName):
       try:
@@ -22,9 +27,7 @@ class EmbeddingService:
          collection = chroma_client.create_collection(collection_name.value)
       
       return collection
-
    
-
    def generate_embedding(self, text: str):
       response = openai.embeddings.create(
            model=settings.EMBEDDING_MODEL,           
@@ -60,8 +63,9 @@ class EmbeddingService:
    def search_text(self, text: str, collection_name: CollectionName):
       try:
          collection = self.get_collection(collection_name)
+         query = self.translate_to_spanish(text)
          results = collection.query(
-            query_embeddings=[self.generate_embedding(text)],
+            query_embeddings=[self.generate_embedding(query)],
             n_results=2
          )
 
