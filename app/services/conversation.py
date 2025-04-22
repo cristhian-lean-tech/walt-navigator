@@ -71,15 +71,13 @@ class ConversationService():
         return request_type["text"]
     
     def process_user_input(self, content: str, user_type: str, user_id: str) -> Dict[str, Any]:
-        request_type = self.detect_request_type(content, user_id)
+        request_type = self.detect_request_type(content, user_id)        
 
         benefit_route = self.embedding_service.search_text(
             text=content,
             collection_name=CollectionName.NAVIGATION,
-            where={"user_type": user_type}
+            where={"$or": [{"user_type": user_type}, {"user_type": "any"}]}
         )
-
-        print("*** ROUTE: ", benefit_route)
       
         response = benefit_route_chain.invoke({"matches": json.dumps(benefit_route, indent=2)})
         result = json.loads(response["text"])
@@ -159,4 +157,3 @@ class ConversationService():
         collection = self.embedding_service.get_collection(CollectionName.NAVIGATION)
         collection.delete()
 
-    
