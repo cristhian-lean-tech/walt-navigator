@@ -7,11 +7,11 @@ load_dotenv()
 
 from app.api.endpoints import assistant
 from app.core.config import settings
-from app.services.navigation import NavigationService
+from app.services.conversation import ConversationService
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    navigation_service = NavigationService()
+    navigation_service = ConversationService()
     navigation_service.init_database()
     print("Database initialized")
     yield
