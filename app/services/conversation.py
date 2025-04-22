@@ -1,14 +1,9 @@
 import json
-from typing import Dict, List, Optional, Any
-from numpy import dot
-from numpy.linalg import norm
-
+from typing import Dict, Optional, Any
 from langchain_community.chat_models import ChatOpenAI
 from langchain.prompts import PromptTemplate, FewShotPromptTemplate
-from langchain.chains import LLMChain
 from langchain.memory import ConversationBufferMemory
-from langchain.chains import ConversationChain
-from langchain_core.runnables.history import RunnableWithMessageHistory
+from langchain.chains import LLMChain
 
 import os
 
@@ -75,8 +70,25 @@ class ConversationService():
 
         return request_type["text"]
     
-    def process_user_input(self, user_id: str, content: str) -> str:
-        request_type = self.detect_request_type(content, user_id)
+    def process_user_input(self, content: str, user_type: str, user_id: str) -> Dict[str, Any]:
+        request_type = self.detect_request_type(content, user_id)        
+
+        benefit_route = self.embedding_service.search_text(
+            text=content,
+            collection_name=CollectionName.NAVIGATION,
+            where={"$or": [{"user_type": user_type}, {"user_type": "any"}]}
+        )
+      
+        response = benefit_route_chain.invoke({"matches": json.dumps(benefit_route, indent=2)})
+        result = json.loads(response["text"])
+        response = {
+            "response": result.get("message"),
+            "paths": benefit_route or None,
+            "request_type": request_type
+        }
+
+        return response
+    
         
         if request_type == "BENEFICIO":
             benefit_route = self.embedding_service.search_text(
@@ -84,7 +96,7 @@ class ConversationService():
                 collection_name=CollectionName.NAVIGATION
                 )
             
-            print(f"**** BENEFIT ROUTE: ", benefit_route)
+            print(f"**** ROUTE: ", benefit_route)
             
             response = benefit_route_chain.invoke({"matches": json.dumps(benefit_route, indent=2)})
             result = json.loads(response["text"])
@@ -131,7 +143,9 @@ class ConversationService():
         collection = self.embedding_service.get_collection(CollectionName.NAVIGATION)
         ids = [item["path"] for item in PATHS]
         documents = [item["description"] for item in PATHS]
-        metadatas = [{"description": item["description"]} for item in PATHS]
+        metadatas = [{"user_type": item["user_type"], "short_description": item["short_description"]} for item in PATHS]
+
+        print(f"**** IDs: ", metadatas)
 
         collection.add(
             ids=ids,
@@ -139,6 +153,7 @@ class ConversationService():
             metadatas=metadatas
         )
 
-    
+    def cleanup_database(self):
+        collection = self.embedding_service.get_collection(CollectionName.NAVIGATION)
+        collection.delete()
 
-    

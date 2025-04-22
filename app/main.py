@@ -7,11 +7,11 @@ load_dotenv()
 
 from app.api.endpoints import assistant
 from app.core.config import settings
-from app.services.navigation import NavigationService
+from app.services.conversation import ConversationService
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    navigation_service = NavigationService()
+    navigation_service = ConversationService()
     navigation_service.init_database()
     print("Database initialized")
     yield
@@ -21,6 +21,19 @@ async def lifespan(app: FastAPI):
     
 
 app = FastAPI(title=settings.PROJECT_NAME, version=settings.VERSION, lifespan=lifespan)
+
+# available cors from any origin
+origins = [
+    "*",
+]
+from fastapi.middleware.cors import CORSMiddleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(assistant.router, prefix="/assistant", tags=["assistant"])
 
