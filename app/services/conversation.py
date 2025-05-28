@@ -1,5 +1,5 @@
 import json
-from typing import Dict, Optional, Any
+from typing import Dict, Optional, Any, List
 from langchain_community.chat_models import ChatOpenAI
 from langchain.prompts import PromptTemplate, FewShotPromptTemplate
 from langchain.memory import ConversationBufferMemory
@@ -63,7 +63,6 @@ class ConversationService():
         self.embedding_service = EmbeddingService()
         self.conversation_manager = ConversationManager()
         self.benefit_sessions = benefit_sessions
-        self.init_database()
     
     def detect_request_type(self, content: str, user_id: str) -> Optional[str]:
         request_type = request_type_chain.invoke({"user_input":content})
@@ -78,9 +77,14 @@ class ConversationService():
             collection_name=CollectionName.NAVIGATION,
             where={"$or": [{"user_type": user_type}, {"user_type": "any"}]}
         )
-      
+
+        
+        benefit_route = self._parse_response(benefit_route)
+        
         response = benefit_route_chain.invoke({"matches": json.dumps(benefit_route, indent=2)})
+        
         result = json.loads(response["text"])
+        
         response = {
             "response": result.get("message"),
             "paths": benefit_route or None,
@@ -134,26 +138,19 @@ class ConversationService():
                 return item
 
         return None
+    
+    def _parse_response(self, results: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        output = []
+        for id_value, metadata, distance in zip(results["ids"][0], results["metadatas"][0], results["distances"][0]):
+            output.append({
+                  "path": id_value,
+                  "description": metadata["short_description"],
+                  "score": round((1-distance), 2)
+            })
+         
+        return [output for output in output]
 
-    def init_database(self):
-        databseWasInitialized = self.embedding_service.exists_collection(CollectionName.NAVIGATION)
-        if databseWasInitialized:
-            return
-        
-        collection = self.embedding_service.get_collection(CollectionName.NAVIGATION)
-        ids = [item["path"] for item in PATHS]
-        documents = [item["description"] for item in PATHS]
-        metadatas = [{"user_type": item["user_type"], "short_description": item["short_description"]} for item in PATHS]
-
-        print(f"**** IDs: ", metadatas)
-
-        collection.add(
-            ids=ids,
-            embeddings=[self.embedding_service.generate_embedding(doc) for doc in documents],
-            metadatas=metadatas
-        )
-
-    def cleanup_database(self):
+    def clean_up_database(self):
         collection = self.embedding_service.get_collection(CollectionName.NAVIGATION)
         collection.delete()
 

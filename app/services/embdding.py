@@ -60,24 +60,15 @@ class EmbeddingService:
       except Exception as e:
          raise HTTPException(status_code=500, detail=str(e))
    
-   def search_text(self, text: str, collection_name: CollectionName, where: dict = None):
+   def search_text(self, text: str, collection_name: CollectionName, where: dict = None, n_results: int = 2):
       try:
          collection = self.get_collection(collection_name)
          query = self.translate_to_spanish(text)
          results = collection.query(
             query_embeddings=[self.generate_embedding(query)],
-            n_results=2,
+            n_results=n_results,
             where=where
          )
-
-         output = []
-         for id_value, metadata, distance in zip(results["ids"][0], results["metadatas"][0], results["distances"][0]):
-            output.append({
-                  "path": id_value,
-                  "description": metadata["short_description"],
-                  "score": round((1-distance), 2)
-            })
-         
-         return [output for output in output]
+         return results
       except Exception as e:
          raise HTTPException(status_code=500, detail=str(e))
