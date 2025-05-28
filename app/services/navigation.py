@@ -176,7 +176,7 @@ class NavigationService():
                   "score": round((1-distance), 2)
             })
          
-        return [output for output in output]
+        return output
 
     def _process_parameter_response(self, conversation_id: str, content: str) -> Dict[str, Any]:
         """
