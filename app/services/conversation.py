@@ -148,7 +148,7 @@ class ConversationService():
                   "score": round((1-distance), 2)
             })
          
-        return [output for output in output]
+        return output
 
     def clean_up_database(self):
         collection = self.embedding_service.get_collection(CollectionName.NAVIGATION)
