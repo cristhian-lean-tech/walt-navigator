@@ -1,24 +1,18 @@
 from fastapi import FastAPI
 from dotenv import load_dotenv
-import os
 from contextlib import asynccontextmanager
 
 load_dotenv()
 
-from app.api.endpoints import assistant
+from app.api.endpoints import assistant, faqs
 from app.core.config import settings
-from app.services.conversation import ConversationService
+from app.config.init_db import load_faqs, load_paths
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    navigation_service = ConversationService()
-    navigation_service.init_database()
-    print("Database initialized")
-    yield
-    # Clean up the Vector DB
-    print("Cleaning up the database")
-    navigation_service.cleanup_database()
-    
+    load_faqs()
+    load_paths()    
+    yield    
 
 app = FastAPI(title=settings.PROJECT_NAME, version=settings.VERSION, lifespan=lifespan)
 
@@ -36,6 +30,7 @@ app.add_middleware(
 )
 
 app.include_router(assistant.router, prefix="/assistant", tags=["assistant"])
+app.include_router(faqs.router, prefix="/faqs", tags=["faqs"])
 
 @app.get("/")
 def read_root():
