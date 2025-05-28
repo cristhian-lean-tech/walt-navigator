@@ -10,7 +10,7 @@ ONBOARDING_FAQS = [
    {
       "id": "q2",
       "question": "I need a labor certificate, how can I get one?",
-      "answer": "If you need any type of documentation related to the service you provide at Lean Tech, just go to the My Board tab in WALT and click on the Document Request button. Or feel free to follow the link Belllow!",
+      "answer": "If you need any type of documentation related to the service you provide at Lean Tech, just go to the My Board tab in WALT and click on the Document Request button. Or feel free to follow the link below!",
       "role": "both",
       "link": "https://walt.lean-tech.io/my-board/services/documents",
       "point_of_contact": "Juan Diego Vanegas"
