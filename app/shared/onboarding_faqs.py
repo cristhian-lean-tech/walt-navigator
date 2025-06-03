@@ -63,7 +63,7 @@ If you want to know more, reach out to Rodrigo Guerra or Juan Grajales on Slack,
       "question": "How can I use the Educational Incentive?",
       "answer": """Glad to know you want to keep learning! For that matter, you can use the 'Brain Power' Educational Benefit, a monthly budget to invest in your continuous learning and improvement. Want to read a book or take a course? We've got you covered! Just use your Brain Power.
 
-To do so, just head to the My board Tab, click the Brain power button and follow the steps. Or follow the link bellow!
+To do so, just head to the My board Tab, click the Brain power button and follow the steps. Or follow the link below!
 
 If you want to know more, reach out to Rodrigo Guerra or Juan Grajales on Slack, and they'll hook you up with all the details. Terms and conditions apply.""",
       "role": "both",
