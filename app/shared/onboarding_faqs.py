@@ -125,7 +125,7 @@ If you have any questions, feel free to reach out to Sofia Acevedo on Slack.""",
       "question": "What can you tell me about the Child Bonus?",
       "answer": """That's our Parenthood Recognition! 👨‍👩‍👧‍👦 If you have children under the age of 18, you'll receive a monetary Recognition every six months to support family-related expenses. Here are some key details:
 
-• Is the benefit per child? Nope! it's per family.
+• Is the benefit per child? Nope! It's per family.
 • How often is it granted? Twice a year: in January and July.
 • How much is the benefit? It varies based on internal policies and may change over time.
 • How can I use it? Just head to the "My Board" tab and click the "Child Bonus" button.""",
