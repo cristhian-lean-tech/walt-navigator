@@ -165,7 +165,18 @@ class NavigationService():
         
         # Si no se detectó un beneficio, buscar en la base de datos vectorial
         result = self.embedding_service.search_text(normalized_content, CollectionName.NAVIGATION)
-        return result
+        return self._parse_response(result)
+    
+    def _parse_response(self, results: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        output = []
+        for id_value, metadata, distance in zip(results["ids"][0], results["metadatas"][0], results["distances"][0]):
+            output.append({
+                  "path": id_value,
+                  "description": metadata["short_description"],
+                  "score": round((1-distance), 2)
+            })
+         
+        return output
 
     def _process_parameter_response(self, conversation_id: str, content: str) -> Dict[str, Any]:
         """
@@ -217,28 +228,6 @@ class NavigationService():
             "conversation_id": conversation_id,
             "benefit": state.benefit
         }
-
-    def init_database(self):
-        databseWasInitialized = self.embedding_service.exists_collection(CollectionName.NAVIGATION)
-        if databseWasInitialized:
-            return
-        
-        collection = self.embedding_service.get_collection(CollectionName.NAVIGATION)
-        ids = [item["path"] for item in PATHS]
-        documents = [item["description"] for item in PATHS]
-        metadatas = [{"description": item["description"]} for item in PATHS]
-
-        collection.add(
-            ids=ids,
-            embeddings=[self.embedding_service.generate_embedding(doc) for doc in documents],
-            metadatas=metadatas
-        )
-
-        self._init_benefit_embeddings()
-    
-    def cleanup_database(self):
-        collection = self.embedding_service.get_collection(CollectionName.NAVIGATION)
-        collection.delete()
 
     def _init_benefit_synonyms(self) -> Dict[str, List[str]]:
         """
