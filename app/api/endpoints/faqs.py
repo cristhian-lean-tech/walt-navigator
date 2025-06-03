@@ -8,7 +8,7 @@ router = APIRouter()
 @router.post("/response")
 async def faqs(body: FaqsDTO):
     faqs_service = FaqsService()
-    response = faqs_service.response_faqs(body.question, body.role)
+    response = faqs_service.response_faqs(body.question, body.contract_type)
 
     return FaqsResponseDTO(
         question=body.question,

@@ -4,9 +4,10 @@ from app.shared.onboarding_faqs import ONBOARDING_FAQS
 from app.shared.paths import PATHS
 
 def load_faqs():
+    """Load FAQ data into the embedding collection."""
     embedding_service = EmbeddingService()
-    collectionWasInitialized = embedding_service.exists_collection(CollectionName.FAQS)
-    if collectionWasInitialized:
+    collection_was_initialized = embedding_service.exists_collection(CollectionName.FAQS)
+    if collection_was_initialized:
         return
     
     collection = embedding_service.get_collection(CollectionName.FAQS)
@@ -23,6 +24,7 @@ def load_faqs():
     print("Faqs loaded successfully")
    
 def load_paths():
+    """Load navigation paths into the embedding collection."""
     embedding_service = EmbeddingService()
     was_collection_initialized = embedding_service.exists_collection(CollectionName.NAVIGATION)
     if was_collection_initialized:

@@ -26,7 +26,7 @@ class ConversationResponseDTO:
 @dataclass
 class FaqsDTO:
     question: str
-    role: str
+    contract_type: str
 
 @dataclass
 class FaqsResponseDTO:
