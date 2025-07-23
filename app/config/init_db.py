@@ -13,8 +13,7 @@ def load_faqs():
     collection = embedding_service.get_collection(CollectionName.FAQS)
     ids = [item["id"] for item in ONBOARDING_FAQS]
     documents = [item["question"] for item in ONBOARDING_FAQS]
-    metadata = [{"user_type": item["role"], "answer": item["answer"], "link": item["link"], "point_of_contact": item["point_of_contact"]} for item in ONBOARDING_FAQS]
-    
+    metadata = [{"user_type": item["role"], "contractor_answer": item["contractor_answer"], "direct_answer": item["direct_answer"], "link": item["link"], "contractor_point_of_contact": item["contractor_point_of_contact"], "direct_point_of_contact": item["direct_point_of_contact"]} for item in ONBOARDING_FAQS]
     collection.add(
         ids=ids,
         embeddings=[embedding_service.generate_embedding(doc) for doc in documents],

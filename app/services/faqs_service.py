@@ -1,5 +1,4 @@
 from app.services.embdding import EmbeddingService
-from app.shared.onboarding_faqs import ONBOARDING_FAQS
 from app.shared.const import CollectionName
 from langdetect import detect
 from deep_translator import GoogleTranslator
@@ -24,6 +23,18 @@ class FaqsService:
         }
         return messages.get(language, messages['en'])
 
+    def _not_found_message(self, language: str) -> dict:
+        not_found_messages = {
+        'es': "Lo siento, no encontré información sobre eso. Por favor intenta de nuevo.",
+        'en': "I'm sorry, I didn't find any information about that. Please try again."
+        }
+    
+        return {
+            "answer": not_found_messages.get(language, not_found_messages['en']),
+            "link": "",
+            "point_of_contact": ""
+        }
+    
     def response_faqs(self, question: str, contract_type: str):
         if(question.strip() == ""):
             language = self._detect_language(question)
@@ -31,7 +42,11 @@ class FaqsService:
                 'es': "Lo siento, no entendí tu pregunta. Por favor intenta de nuevo.",
                 'en': "I'm sorry, I didn't understand your question. Please try again."
             }
-            return empty_messages.get(language, empty_messages['en'])
+            return {
+                "answer": empty_messages.get(language, empty_messages['en']),
+                "link": "",
+                "point_of_contact": ""
+            }
         
         # Detect the language of the question
         language = self._detect_language(question)
@@ -44,8 +59,7 @@ class FaqsService:
         )
         output = []
         for id_value, metadata, distance in zip(faqs["ids"][0], faqs["metadatas"][0], faqs["distances"][0]):
-            print(distance)
-            if(distance > 0.5):
+            if(distance > 0.4):
                 output.append({
                     "question": id_value,
                     "answer": self._get_no_answer_message(language),
@@ -53,7 +67,9 @@ class FaqsService:
                     "point_of_contact": ""
                 })
             else:
-                answer = metadata["answer"]
+                answer_key = "contractor_answer" if contract_type == "contractor" else "direct_answer"
+                point_of_contact_key = "contractor_point_of_contact" if contract_type == "contractor" else "direct_point_of_contact"
+                answer = metadata[answer_key]
                 if language == 'es' and self._detect_language(answer) == 'en':
                     answer = GoogleTranslator(source='en', target='es').translate(answer)
                 
@@ -61,14 +77,11 @@ class FaqsService:
                     "question": id_value,
                     "answer": answer,
                     "link": metadata["link"],
-                    "point_of_contact": metadata["point_of_contact"]
+                    "point_of_contact": metadata[point_of_contact_key]
                 })
          
         if(len(output) == 0):
-            not_found_messages = {
-                'es': "Lo siento, no encontré información sobre eso. Por favor intenta de nuevo.",
-                'en': "I'm sorry, I didn't find any information about that. Please try again."
-            }
-            return not_found_messages.get(language, not_found_messages['en'])
+            return self._not_found_message(language)
         
         return output[0]
+    
