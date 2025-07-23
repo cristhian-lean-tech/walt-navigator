@@ -21,7 +21,7 @@ async def faqs(body: FaqsDTO):
 
     return FaqsResponseDTO(
         question=body.question,
-        answer=response.get("answer"),
-        link=response.get("link"),
-        point_of_contact=response.get("point_of_contact")
+        answer=response.get("answer", ""),
+        link=response.get("link", ""),
+        point_of_contact=response.get("point_of_contact", "")
     )

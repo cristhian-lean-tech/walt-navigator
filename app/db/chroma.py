@@ -3,7 +3,7 @@ from chromadb.config import Settings
 
 
 
-chroma_client = PersistentClient(path="./data/chroma")
+chroma_client = PersistentClient(path="./data/chroma", settings=Settings(anonymized_telemetry=False))
 
 # def save_embedding(embedding_id: str, content: list, collection_name: CollectionName):
 #     collection = chroma_client.get_or_create_collection(collection_name.value)
