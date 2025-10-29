@@ -82,7 +82,7 @@ PATHS = [
         "short_description": "Update info"
     },
     {
-        "path": "https://walt.lean-tech.io/my-board/services/it-support",
+        "path": "/my-board/services/it-support",
         "description": "Solicitar ayuda técnica general: problema con el equipo, software, conexión, actualizaciones, configuración, soporte técnico, IT support, technical issue",
         "user_type": "any",
         "short_description": "IT support"

@@ -225,7 +225,7 @@ If you’d like more information, feel free to reach out to Sebastián Lozano, f
       "contractor_answer": """If you're having trouble with your PC, peripherals, or have any related questions, you can reach out to @IT Support on Slack. Our IT team will be more than happy to help you!""",
       "direct_answer": """If you're having trouble with your PC, peripherals, or have any related questions, you can reach out to @IT Support on Slack. Our IT team will be more than happy to help you!""",
       "role": "both",
-      "link": "",
+      "link": "https://walt.lean-tech.io/my-board/services/it-support",
       "contractor_point_of_contact": "IT Support",
       "direct_point_of_contact": "IT Support"
    },
