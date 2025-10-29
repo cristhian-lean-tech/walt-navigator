@@ -276,4 +276,85 @@ If you’d like more information, feel free to reach out to Rodrigo Guerra on Sl
       "contractor_point_of_contact": "Rodrigo Guerra",
       "direct_point_of_contact": "Rodrigo Guerra"
    },
+   {
+      "id": "q14",
+      "question": "How to Create a General IT Support Request",
+      "contractor_answer": """Use this when you need help with your device, software, or any technical issue. Create a ticket describing your problem clearly and attach screenshots if possible. You’ll receive updates by email and the ticket will close automatically once solved.""",
+      "direct_answer": """Use this when you need help with your device, software, or any technical issue. Create a ticket describing your problem clearly and attach screenshots if possible. You’ll receive updates by email and the ticket will close automatically once solved.""",
+      "role": "both",
+      "link": "https://walt.lean-tech.io/my-board/services/it-support",
+      "contractor_point_of_contact": "IT Support",
+      "direct_point_of_contact": "IT Support"
+   },
+   {
+    "id": "q15",
+    "question": "Requesting Additional IT Equipment",
+    "contractor_answer": "Use this after onboarding if you need extra accessories like a monitor, keyboard, mouse, or headset. Inform your leader or Account Manager, who must fill out the Change Request Form in Airtable. Once approved, IT will send or assign the requested item, and you must sign the delivery acknowledgment form.",
+    "direct_answer": "Use this after onboarding if you need extra accessories like a monitor, keyboard, mouse, or headset. Inform your leader or Account Manager, who must fill out the Change Request Form in Airtable. Once approved, IT will send or assign the requested item, and you must sign the delivery acknowledgment form.",
+    "role": "both",
+    "link": "https://walt.lean-tech.io/my-board/services/it-support",
+    "contractor_point_of_contact": "IT Support",
+    "direct_point_of_contact": "IT Support"
+  },
+  {
+    "id": "q16",
+    "question": "Replacement of Equipment or Accessories Due to Malfunction",
+    "contractor_answer": "Use this if a device or accessory stops working properly. Create a ticket describing the issue. IT will diagnose the problem and replace the item if the damage is confirmed. You’ll sign an updated delivery acknowledgment form.",
+    "direct_answer": "Use this if a device or accessory stops working properly. Create a ticket describing the issue. IT will diagnose the problem and replace the item if the damage is confirmed. You’ll sign an updated delivery acknowledgment form.",
+    "role": "both",
+    "link": "https://walt.lean-tech.io/my-board/services/it-support",
+    "contractor_point_of_contact": "IT Support",
+    "direct_point_of_contact": "IT Support"
+  },
+  {
+    "id": "q17",
+    "question": "Email Account Issues (Password or 2FA Authentication)",
+    "contractor_answer": "Use this when you forget your password, lose 2FA access, or your account gets locked. Create a ticket explaining your case. IT will verify your identity and send a temporary password or backup code. Change your password after login if temporary credentials are used.",
+    "direct_answer": "Use this when you forget your password, lose 2FA access, or your account gets locked. Create a ticket explaining your case. IT will verify your identity and send a temporary password or backup code. Change your password after login if temporary credentials are used.",
+    "role": "both",
+    "link": "https://walt.lean-tech.io/my-board/services/it-support",
+    "contractor_point_of_contact": "IT Support",
+    "direct_point_of_contact": "IT Support"
+  },
+  {
+    "id": "q18",
+    "question": "Requesting an Equipment Upgrade or Improvement",
+    "contractor_answer": "Use this when you need to increase RAM, change disk, switch to a higher model, or migrate from Windows to Mac. Talk to your leader or Account Manager, who must fill out the Change Request Form. IT will request approval and process the upgrade. You’ll sign the new acknowledgment form once completed.",
+    "direct_answer": "Use this when you need to increase RAM, change disk, switch to a higher model, or migrate from Windows to Mac. Talk to your leader or Account Manager, who must fill out the Change Request Form. IT will request approval and process the upgrade. You’ll sign the new acknowledgment form once completed.",
+    "role": "both",
+    "link": "https://walt.lean-tech.io/my-board/services/it-support",
+    "contractor_point_of_contact": "IT Support",
+    "direct_point_of_contact": "IT Support"
+  },
+  {
+    "id": "q19",
+    "question": "Software, License, or Subscription Requests",
+    "contractor_answer": "Use this when you need to purchase software or a paid subscription. Complete the License Request Form in Airtable with cost details. Log in using your @lean-tech.io email. IT will request approval and then inform you of next steps to activate your license. No ticket creation is required.",
+    "direct_answer": "Use this when you need to purchase software or a paid subscription. Complete the License Request Form in Airtable with cost details. Log in using your @lean-tech.io email. IT will request approval and then inform you of next steps to activate your license. No ticket creation is required.",
+    "role": "both",
+    "link": "https://airtable.com/app3LvBVLUxWZEGI5/pagxtMHwMLmcUQH7T/form",
+    "contractor_point_of_contact": "IT Support",
+    "direct_point_of_contact": "IT Support"
+  },
+  {
+    "id": "q20",
+    "question": "Hardware Issues",
+    "contractor_answer": "Use this when your equipment has visible physical damage (broken screen, damaged keys, non-functioning mouse, etc.). Create a ticket describing the issue. IT will check if it can be repaired; if not, it will be replaced following the malfunction replacement process.",
+    "direct_answer": "Use this when your equipment has visible physical damage (broken screen, damaged keys, non-functioning mouse, etc.). Create a ticket describing the issue. IT will check if it can be repaired; if not, it will be replaced following the malfunction replacement process.",
+    "role": "both",
+    "link": "https://walt.lean-tech.io/my-board/services/it-support",
+    "contractor_point_of_contact": "IT Support",
+    "direct_point_of_contact": "IT Support"
+  },
+  {
+    "id": "q21",
+    "question": "Request for Navigation Permissions (Blocked Websites)",
+    "contractor_answer": "Use this when antivirus or network policies block a site needed for work. Create a ticket including the blocked site and reason. Open Sophos Endpoint → About → Self Help Tool → System tab, take a screenshot of your computer name and user, and attach it to the ticket. IT will coordinate the unblock if justified.",
+    "direct_answer": "Use this when antivirus or network policies block a site needed for work. Create a ticket including the blocked site and reason. Open Sophos Endpoint → About → Self Help Tool → System tab, take a screenshot of your computer name and user, and attach it to the ticket. IT will coordinate the unblock if justified.",
+    "role": "both",
+    "link": "https://walt.lean-tech.io/my-board/services/it-support",
+    "contractor_point_of_contact": "IT Support",
+    "direct_point_of_contact": "IT Support"
+  }
+
 ]
