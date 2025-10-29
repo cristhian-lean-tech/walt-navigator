@@ -80,5 +80,11 @@ PATHS = [
         "description": "Actualizar información personal: dirección, teléfono, correo electrónico, datos de contacto, perfil de empleado, update personal data",
         "user_type": "any",
         "short_description": "Update info"
+    },
+    {
+        "path": "https://walt.lean-tech.io/my-board/services/it-support",
+        "description": "Solicitar ayuda técnica general: problema con el equipo, software, conexión, actualizaciones, configuración, soporte técnico, IT support, technical issue",
+        "user_type": "any",
+        "short_description": "IT support"
     }
 ]
