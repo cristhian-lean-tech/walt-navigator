@@ -17,7 +17,8 @@ from .conversation_manager import ConversationManager
 from app.shared.paths import PATHS
 from app.shared.forms import FORMS
 
-llm = ChatOpenAI(temperature=0, model="gpt-3.5-turbo", openai_api_key=os.environ.get("OPENAI_API_KEY"))
+MODEL_NAME = os.environ.get("MODEL_NAME", "gpt-3.5-turbo")
+llm = ChatOpenAI(temperature=0, model=MODEL_NAME, openai_api_key=os.environ.get("OPENAI_API_KEY"))
 
 prompt = PromptTemplate(
     input_variables=["user_input"],
@@ -58,7 +59,7 @@ class NavigationService():
     def get_user_session(self, user_id: str):
         if user_id not in sessions:
             sessions[user_id] = ConversationChain(
-                llm=ChatOpenAI(temperature=0, model="gpt-3.5-turbo", openai_api_key=os.environ.get("OPENAI_API_KEY")),
+                llm=ChatOpenAI(temperature=0, model=MODEL_NAME, openai_api_key=os.environ.get("OPENAI_API_KEY")),
                 memory=ConversationBufferMemory(return_messages=True),
                 verbose=False
             )

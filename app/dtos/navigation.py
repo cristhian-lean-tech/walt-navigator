@@ -27,6 +27,7 @@ class ConversationResponseDTO:
 class FaqsDTO:
     question: str
     contract_type: str
+    user_id: str
 
 @dataclass
 class FaqsResponseDTO:

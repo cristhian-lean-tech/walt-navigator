@@ -15,11 +15,11 @@ from app.shared.paths import PATHS
 from app.shared.forms import FORMS
 from .prompts import request_type_prompt, benefit_route_prompt, EXAMPLES_REQUEST_TYPE
 
-MODEL_NAME = os.environ.get("MODEL_NAME")
+MODEL_NAME = os.environ.get("MODEL_NAME", "gpt-3.5-turbo")
 
 llm = ChatOpenAI(temperature=0, model=MODEL_NAME, openai_api_key=os.environ.get("OPENAI_API_KEY"))
 
-prefix = "Clasifica la siguiente solicitud en una de las categorías: BENEFICIO, EMPRESA, USUARIO, OTRO.\n\n"
+prefix = "Clasifica la siguiente solicitud en una de las categorías: BENEFICIO, EMPRESA, USUARIO, SOPORTE, OTRO.\n\n"
 suffix = "\nEntrada: {user_input}\nClasificación:"
 
 few_shot_request_type_template = FewShotPromptTemplate(
@@ -36,6 +36,8 @@ prompt = PromptTemplate(
 Clasifica la siguiente solicitud en una de las siguientes categorías:
 - BENEFICIO: si el usuario desea pedir vacaciones, días libres, gimnasio, etc.
 - EMPRESA: si el usuario pregunta sobre la empresa, jefe, políticas, etc.
+- SOPORTE: si el usuario tiene problemas técnicos, necesita soporte IT, problemas con equipos, software, licencias, etc.
+- USUARIO: si el usuario pregunta sobre información personal suya.
 - OTRO: si no pertenece a ninguna de las anteriores.
 
 Mensaje: "{user_input}"
