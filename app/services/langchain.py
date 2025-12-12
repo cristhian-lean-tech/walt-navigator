@@ -24,10 +24,19 @@ class FaqsResponseDTO:
     #point_of_contact: Optional[str] = None
 
 
-SMALL_TALK_PROMPT = """Eres un asistente virtual de soporte de la empresa. Tu trabajo es ayudar a los usuarios con preguntas sobre beneficios, políticas, recursos humanos, soporte técnico y temas relacionados con el trabajo.
-    Si el usuario te habla de otras cosas, response de educado, cortante y vuelve a preguntarle soobre los temas de la empresa que tu respondes.
-    Eres un asistente virtual de soporte de la empresa. Tu trabajo es ayudar a los usuarios con preguntas sobre beneficios, políticas, recursos humanos, soporte técnico y temas relacionados con el trabajo.
-    Si el usuario te habla de otras cosas, response de educado, cortante y vuelve a preguntarle soobre los temas de la empresa que tu respondes"""
+SMALL_TALK_PROMPT = """
+Eres un asistente interno de soporte de la empresa.
+
+Alcance: SOLO SMALL TALK (saludos, agradecimientos, despedidas, frases cortas sin solicitud concreta).
+
+Reglas:
+- Responde en 1–2 frases, tono amable y profesional.
+- No inventes información de la empresa.
+- Cierra ofreciendo ayuda en temas de trabajo: beneficios, RRHH/onboarding, time off/PTO, pagos/fee, herramientas internas (WALT/My Board), soporte IT.
+
+Ejemplos:
+- "Hola" => "Hola. ¿En qué puedo ayudarte con beneficios, RRHH, time off o soporte IT?"
+"""
 FAQS_PROMPT = """You are a FAQS agent to answer questions about the company to their employees and create a new IT support request if the employee needs it.
     IMPORTANT INSTRUCTIONS:
     - After calling a tool, you MUST provide a final answer and STOP. Do not call tools repeatedly.
@@ -106,7 +115,7 @@ class CompanyChatbotService:
         if cls.one_shot_model is None:
             # Create the LLM chain with the few-shot prompt template
             MODEL_NAME = os.environ.get("MODEL_NAME", "gpt-4o-mini")
-            cls.one_shot_model = init_chat_model(MODEL_NAME, temperature=0.2, timeout=10, max_tokens=1000)
+            cls.one_shot_model = init_chat_model(MODEL_NAME, temperature=0.2, timeout=15, max_tokens=150)
         return cls.one_shot_model
 
     def __init__(self):

@@ -111,7 +111,8 @@ faq_intent_prompt = PromptTemplate(
 )
 
 faq_intent_classifier_prompt = PromptTemplate(  
-    input_variables=["user_message"],  
+    input_variables=["user_message", "format_instructions"],  
+    template_format="jinja2",
     template="""You are an intent router for an internal company chatbot.
 Your job is to classify the user's message into exactly one of these intents:
 - IN_SCOPE: Company/work-related topics that can be handled using internal FAQs/processes (benefits, HR, onboarding, time off, salary increase, internal tools like WALT/My Board, Slack, Airtable forms, IT support, equipment/software/license requests, blocked websites, labor certificates, documentation requests).
@@ -122,24 +123,26 @@ Use the following rules:
 1) If the message is primarily a greeting/thanks/farewell and contains no actionable request, choose SMALL_TALK.
 2) If the message asks about internal company processes, benefits, HR topics, onboarding, time off, salary/fee increase, IT support, equipment/software/licenses, or internal tools (WALT/My Board/Slack/Airtable), choose IN_SCOPE.
 3) If the message requires public/external knowledge and is not about the company/work context, choose OUT_OF_SCOPE.
-4) If the message is ambiguous (e.g., “I need help”, “I have an issue”) but sounds work-related, choose IN_SCOPE and set needs_clarification=true.
+4) If the message is ambiguous (e.g., "I need help", "I have an issue") but sounds work-related, choose IN_SCOPE and set needs_clarification=true.
 
-Return a STRICT JSON object only (no markdown, no extra text) with:
-{
-  "intent": "IN_SCOPE" | "OUT_OF_SCOPE" | "SMALL_TALK",
-  "confidence": number,  // 0.0 to 1.0
-  "needs_clarification": boolean,
-  "clarifying_question": string | null, // only if needs_clarification=true
-  "short_reason": string  // <= 20 words, for logging
-}
+Return a STRICT JSON object only (no markdown, no extra text) with ALL required fields:
+- intent: one of IN_SCOPE, OUT_OF_SCOPE, or SMALL_TALK
+- confidence: a float between 0.0 and 1.0
+- needs_clarification: a boolean
+- clarifying_question: a string or null (only if needs_clarification is true)
+- short_reason: a brief explanation (max 120 characters)
+
+{{ format_instructions }}
 
 Confidence guidance:
 - 0.90–1.00: clearly matches one intent (explicit keywords like WALT, PTO, benefits, IT ticket, etc. or clear small talk)
 - 0.70–0.89: likely but not explicit
 - 0.40–0.69: ambiguous; set needs_clarification=true if IN_SCOPE ambiguity
 
+IMPORTANT: You MUST include all fields (intent, confidence, needs_clarification, short_reason, and clarifying_question if needed) in your JSON response.
+
 User message:
-{{user_message}}
+{{ user_message }}
 """
     
 )
@@ -147,9 +150,7 @@ User message:
 faq_small_talk_prompt = PromptTemplate(
     input_variables=["user_input"],
     template="""Eres un asistente virtual de soporte de la empresa. Tu trabajo es ayudar a los usuarios con preguntas sobre beneficios, políticas, recursos humanos, soporte técnico y temas relacionados con el trabajo.
-    Si el usuario te habla de otras cosas, response de educado, cortante y vuelve a preguntarle soobre los temas de la empresa que tu respondes.
-    Eres un asistente virtual de soporte de la empresa. Tu trabajo es ayudar a los usuarios con preguntas sobre beneficios, políticas, recursos humanos, soporte técnico y temas relacionados con el trabajo.
-    Si el usuario te habla de otras cosas, response de educado, cortante y vuelve a preguntarle soobre los temas de la empresa que tu respondes."""
+    Si el usuario te habla de otras cosas, response de forma educada con una pequeña conversacion pero regresa al tema de la empresa y ofrece ayuda. """
 )
 
 # Prompt para respuestas conversacionales con contexto
