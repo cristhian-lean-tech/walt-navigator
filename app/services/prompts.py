@@ -196,3 +196,35 @@ Genera una respuesta conversacional y útil que:
 Responde en el mismo idioma que el usuario usó en su pregunta.
 """
 )
+
+# Prompt para clarificación de preguntas ambiguas
+faq_clarification_prompt = PromptTemplate(
+    input_variables=["user_question", "retrieved_faqs", "format_instructions"],
+    template_format="jinja2",
+    template="""You are a company support assistant helping to clarify ambiguous user questions.
+
+The user asked: "{{ user_question }}"
+
+We retrieved the following FAQs from our knowledge base:
+{{ retrieved_faqs }}
+
+Your task:
+1. Analyze if ANY of the retrieved FAQs are related to the user's question
+2. If they ARE related but ambiguous (multiple options), generate a clarifying question to help identify which specific FAQ the user needs
+3. If they are NOT related, generate a clarifying question to better understand what the user is asking about
+
+Guidelines:
+- The clarifying question should be concise (1-2 sentences max)
+- It should help distinguish between the options if multiple FAQs are relevant
+- It should ask for specific details if the question is too vague
+- Respond in the same language as the user's question 
+- Be friendly and professional
+
+{{ format_instructions }}
+
+Return a JSON object with:
+- is_related: boolean (true if at least one FAQ is related to the question)
+- clarifying_question: string (the question to ask the user, or null if not needed)
+- related_faq_indexes: array of numbers (indexes of FAQs that are related, empty if none)
+"""
+)
