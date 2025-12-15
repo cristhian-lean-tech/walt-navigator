@@ -5,6 +5,7 @@ description = "Walt Faqs, Navigation and It support"
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
 dependencies = [
+    "apscheduler>=3.11.1",
     "chromadb==1.0.12",
     "deep-translator>=1.11.4",
     "fastapi==0.115.9",

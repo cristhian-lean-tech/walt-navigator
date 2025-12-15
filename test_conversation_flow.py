@@ -1,11 +1,13 @@
 """
 Test script for conversation flow with memory.
 
-This script tests the conversation flow with clarification and memory management.
+This script tests the conversation flow with clarification and memory management,
+including automatic session cleanup after 30 minutes of inactivity.
 """
 
 from app.services.faqs_service2 import FaqsService2
 from app.services.session_manager import session_manager
+from datetime import datetime, timedelta
 
 
 def test_conversation_flow():
@@ -78,8 +80,51 @@ def test_conversation_flow():
     session_manager.clear_session(user_id)
     
     print("\n" + "=" * 80)
+    print("TEST 4: Session timeout and cleanup")
+    print("=" * 80)
+    
+    # Create a test session
+    test_user = "timeout_test_user"
+    question4 = "Test question for timeout"
+    print(f"\nUser: {question4}")
+    
+    response4 = service.ask_faqs_agent(question4, contract_type, test_user)
+    print(f"Bot: {response4.answer[:100]}...")
+    
+    # Check session exists
+    initial_count = session_manager.get_active_sessions_count()
+    print(f"\nActive sessions before cleanup: {initial_count}")
+    
+    # Simulate old session by manually setting last_updated to 31 minutes ago
+    session = session_manager.get_session(test_user)
+    session.last_updated = datetime.now() - timedelta(minutes=31)
+    session_manager._sessions[test_user] = session
+    
+    print(f"Simulated session last_updated: {session.last_updated}")
+    print(f"Current time: {datetime.now()}")
+    print(f"Session age: 31 minutes (exceeds 30 minute timeout)")
+    
+    # Trigger cleanup by accessing any session
+    _ = session_manager.get_session("another_user")
+    
+    # Check session count after cleanup
+    final_count = session_manager.get_active_sessions_count()
+    print(f"\nActive sessions after cleanup: {final_count}")
+    print(f"Expired sessions removed: {initial_count - final_count}")
+    
+    # Verify the old session was removed
+    if test_user not in session_manager._sessions:
+        print("✅ Old session successfully cleaned up!")
+    else:
+        print("❌ Old session still exists (cleanup failed)")
+    
+    # Clean up remaining test sessions
+    session_manager.clear_session("another_user")
+    
+    print("\n" + "=" * 80)
     print("All tests completed!")
     print("=" * 80)
+    print(f"\nFinal active sessions: {session_manager.get_active_sessions_count()}")
 
 
 if __name__ == "__main__":

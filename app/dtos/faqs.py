@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import Optional
+from datetime import datetime
 
 class IntentClassifierOutput(BaseModel):
    intent: str
@@ -16,6 +17,7 @@ class SessionState(BaseModel):
    last_user_question: str | None = None
    pending_faqs: list[dict] | None = None  # Store FAQs awaiting clarification
    rag_state_indexes: list[int] | None = None  # Store RAG state indexes
+   last_updated: datetime = Field(default_factory=datetime.now)  # Track last activity
 
 class FaqsDTO(BaseModel):
     question: str

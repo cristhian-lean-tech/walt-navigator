@@ -11,9 +11,20 @@ from app.services.langchain import CompanyChatbotService
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    # Startup
     load_faqs()
-    load_paths()    
-    yield    
+    load_paths()
+    
+    # Start background tasks for session cleanup
+    from app.services.background_tasks import start_background_tasks, stop_background_tasks
+    start_background_tasks()
+    print("✅ Background tasks started (session cleanup)")
+    
+    yield
+    
+    # Shutdown
+    stop_background_tasks()
+    print("✅ Background tasks stopped")    
 
 app = FastAPI(title=settings.PROJECT_NAME, version=settings.VERSION, lifespan=lifespan)
 
