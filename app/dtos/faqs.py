@@ -13,6 +13,9 @@ class SessionState(BaseModel):
    pending_clarification: bool = False
    last_bot_question: str | None = None
    last_in_scope_topic: str | None = None
+   last_user_question: str | None = None
+   pending_faqs: list[dict] | None = None  # Store FAQs awaiting clarification
+   rag_state_indexes: list[int] | None = None  # Store RAG state indexes
 
 class FaqsDTO(BaseModel):
     question: str

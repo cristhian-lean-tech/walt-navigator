@@ -228,3 +228,37 @@ Return a JSON object with:
 - related_faq_indexes: array of numbers (indexes of FAQs that are related, empty if none)
 """
 )
+
+# Prompt for handling clarification responses
+faq_clarification_response_prompt = PromptTemplate(
+    input_variables=["original_question", "user_response", "available_faqs", "format_instructions"],
+    template_format="jinja2",
+    template="""You are a company support assistant analyzing a user's response to a clarification question.
+
+Original question: "{{ original_question }}"
+User's response: "{{ user_response }}"
+
+Available FAQs:
+{{ available_faqs }}
+
+Your task:
+1. Analyze if the user's response helps identify which FAQ they need
+2. Determine which FAQ (if any) best matches based on their clarification
+3. If the response is too vague or doesn't match any FAQ, indicate that more clarification is needed
+
+Guidelines:
+- Look for keywords, confirmations (yes/no), or specific details in the user's response
+- Match the response to the most relevant FAQ
+- If the user says "yes", "correct", "that one", etc., choose the first/most relevant FAQ
+- If the user says "no", "neither", "none", etc., indicate no match
+- If unclear, request more clarification
+- Be context-aware: the user might be answering the clarification question directly
+
+{{ format_instructions }}
+
+Return a JSON object with:
+- selected_faq_index: number or null (the index of the selected FAQ, null if none match)
+- needs_more_clarification: boolean (true if the response is too vague)
+- confidence: float between 0.0 and 1.0 (how confident you are in the selection)
+"""
+)

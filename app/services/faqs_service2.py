@@ -7,10 +7,11 @@ from langdetect import detect
 from app.dtos.faqs import IntentClassifierOutput
 from app.services.langchain import CompanyChatbotService
 from app.services.embdding import EmbeddingService
-from app.services.prompts import faq_intent_classifier_prompt, faq_small_talk_prompt, faq_clarification_prompt
+from app.services.session_manager import session_manager
+from app.services.prompts import faq_intent_classifier_prompt, faq_small_talk_prompt, faq_clarification_prompt, faq_clarification_response_prompt
 from app.services.embdding import CollectionName
 from langchain_core.output_parsers import PydanticOutputParser
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from app.dtos.faqs import FaqsResponseDTO
 from app.services.faqs_mapper import from_string_to_faqs_response_dto, from_dict_to_faqs_response_dto
 
@@ -32,6 +33,11 @@ class ClarificationOutput(BaseModel):
     is_related: bool
     clarifying_question: Optional[str] = None
     related_faq_indexes: list[int] = []
+
+class ClarificationResponseOutput(BaseModel):
+    selected_faq_index: Optional[int] = None
+    needs_more_clarification: bool
+    confidence: float = Field(default=0.5, ge=0.0, le=1.0)
 
 
 class FaqsService2:
@@ -60,9 +66,14 @@ class FaqsService2:
 
     def ask_faqs_agent(self, question: str, contract_type: str, user_id: str) -> FaqsResponseDTO:
         language = self._detect_language(question)
+        
+        # Check if user has a pending clarification
+        if session_manager.has_pending_clarification(user_id):
+            result = self.handle_clarification_response(question, language, contract_type, user_id)
+            return from_dict_to_faqs_response_dto(result)
+        
         intent = self.get_intent(question)
         intent_category = intent.intent
-        print(f"[INTENT CATEGORY] {intent_category}")
 
         match (intent_category):
             case "SMALL_TALK":
@@ -113,9 +124,7 @@ class FaqsService2:
         )
 
         if faqs["ids"][0] and len(faqs["ids"][0]) > 0:
-            print(f"[IF]", faqs)
             distances = faqs.get("distances", None)
-            print(f"[DISTANCES] {distances}")
             rag_state = self.parse_rag_response(distances[0]) if distances else None
             if not rag_state:
                 return self.get_out_of_scope_message(language)
@@ -143,6 +152,23 @@ class FaqsService2:
                     contract_type=contract_type
                 )
                 if clarifying_question:
+                    # Store the pending clarification in session
+                    metadatas = faqs.get("metadatas", [])
+                    pending_faqs = []
+                    if metadatas and metadatas[0]:
+                        for idx in rag_state.indexes:
+                            if idx < len(metadatas[0]):
+                                pending_faqs.append(metadatas[0][idx])
+                    
+                    session_manager.set_pending_clarification(
+                        user_id=user_id,
+                        question=question,
+                        bot_question=clarifying_question,
+                        faqs=pending_faqs,
+                        rag_indexes=rag_state.indexes,
+                        intent="IN_SCOPE"
+                    )
+                    
                     return {
                         "answer": clarifying_question,
                         "link": "",
@@ -290,4 +316,105 @@ class FaqsService2:
                 return "Necesito más información para responder tu pregunta. ¿Puedes proporcionar más detalles sobre lo que necesitas?"
             else:
                 return "I need more information to answer your question. Can you provide more details about what you need?"
+    
+    def handle_clarification_response(
+        self, 
+        user_response: str, 
+        language: str, 
+        contract_type: str, 
+        user_id: str
+    ) -> dict:
+        """
+        Handle the user's response to a clarification question.
+        
+        Args:
+            user_response: The user's response to the clarification question
+            language: Language code ('es' or 'en')
+            contract_type: User contract type ('contractor' or 'direct')
+            user_id: User identifier
+            
+        Returns:
+            Dictionary with answer, link, and point_of_contact
+        """
+        try:
+            # Get the session state
+            session = session_manager.get_session(user_id)
+            
+            if not session.pending_faqs or not session.last_user_question:
+                # No pending clarification, clear and return error
+                session_manager.clear_pending_clarification(user_id)
+                return self.get_out_of_scope_message(language)
+            
+            # Build the available FAQs context
+            available_faqs_text = []
+            for idx, faq_metadata in enumerate(session.pending_faqs):
+                faq_question = faq_metadata.get("question", "")
+                answer_key = "contractor_answer" if contract_type == "contractor" else "direct_answer"
+                faq_answer = faq_metadata.get(answer_key, "")
+                
+                available_faqs_text.append(
+                    f"FAQ {idx}:\n"
+                    f"Question: {faq_question}\n"
+                    f"Answer: {faq_answer}\n"
+                )
+            
+            available_faqs_context = "\n\n".join(available_faqs_text)
+            
+            # Create parser for the clarification response output
+            parser = PydanticOutputParser(pydantic_object=ClarificationResponseOutput)
+            
+            # Create the chain
+            chain = faq_clarification_response_prompt | CompanyChatbotService.get_one_shot_model() | parser
+            
+            # Invoke the chain
+            clarification_result: ClarificationResponseOutput = chain.invoke({
+                "original_question": session.last_user_question,
+                "user_response": user_response,
+                "available_faqs": available_faqs_context,
+                "format_instructions": parser.get_format_instructions()
+            })
+            
+            # Check if we need more clarification
+            if clarification_result.needs_more_clarification or clarification_result.confidence < 0.5:
+                # Still unclear, ask for more clarification
+                if language == 'es':
+                    return {
+                        "answer": "No estoy seguro de entender tu respuesta. ¿Podrías ser más específico sobre cuál de las opciones necesitas?",
+                        "link": "",
+                        "point_of_contact": ""
+                    }
+                else:
+                    return {
+                        "answer": "I'm not sure I understand your response. Could you be more specific about which option you need?",
+                        "link": "",
+                        "point_of_contact": ""
+                    }
+            
+            # Check if a FAQ was selected
+            if clarification_result.selected_faq_index is not None:
+                faq_index = clarification_result.selected_faq_index
+                
+                # Validate the index
+                if 0 <= faq_index < len(session.pending_faqs):
+                    metadata = session.pending_faqs[faq_index]
+                    
+                    # Clear the pending clarification
+                    session_manager.clear_pending_clarification(user_id)
+                    
+                    # Return the selected FAQ answer
+                    return {
+                        "answer": metadata["contractor_answer"] if contract_type == "contractor" else metadata["direct_answer"],
+                        "link": metadata["link"],
+                        "point_of_contact": metadata["contractor_point_of_contact"] if contract_type == "contractor" else metadata["direct_point_of_contact"]
+                    }
+            
+            # No FAQ selected (user said "none", "neither", etc.)
+            session_manager.clear_pending_clarification(user_id)
+            return self.get_out_of_scope_message(language)
+            
+        except Exception as e:
+            print(f"[ERROR in handle_clarification_response] {str(e)}")
+            # Clear the session and return error message
+            session_manager.clear_pending_clarification(user_id)
+            return self.get_out_of_scope_message(language)
         
