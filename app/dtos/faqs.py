@@ -1,6 +1,5 @@
 from pydantic import BaseModel, Field
 from typing import Optional
-from app.shared.const import IntentType
 
 class IntentClassifierOutput(BaseModel):
    intent: str
@@ -14,3 +13,14 @@ class SessionState(BaseModel):
    pending_clarification: bool = False
    last_bot_question: str | None = None
    last_in_scope_topic: str | None = None
+
+class FaqsDTO(BaseModel):
+    question: str
+    contract_type: str
+    user_id: str
+
+class FaqsResponseDTO(BaseModel):
+    question: str
+    answer: str
+    link: Optional[str] = None
+    point_of_contact: Optional[str] = None

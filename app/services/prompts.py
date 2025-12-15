@@ -149,8 +149,12 @@ User message:
 
 faq_small_talk_prompt = PromptTemplate(
     input_variables=["user_input"],
-    template="""Eres un asistente virtual de soporte de la empresa. Tu trabajo es ayudar a los usuarios con preguntas sobre beneficios, políticas, recursos humanos, soporte técnico y temas relacionados con el trabajo.
-    Si el usuario te habla de otras cosas, response de forma educada con una pequeña conversacion pero regresa al tema de la empresa y ofrece ayuda. """
+    template="""You are a company support virtual assistant. Your job is to help users with questions about benefits, policies, human resources, technical support, and other work-related topics.
+    If the user talks about other subjects, respond politely with a brief conversation, then steer the discussion back to company-related topics and offer assistance.
+    IMPORTANT: Respond in the same language as the user.
+    Mensaje usuario: 
+    {user_input}
+    """
 )
 
 # Prompt para respuestas conversacionales con contexto

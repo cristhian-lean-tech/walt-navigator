@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.dtos.navigation import FaqsDTO, FaqsResponseDTO
+from app.dtos.faqs import FaqsDTO, FaqsResponseDTO
 from app.services.faqs_service2 import FaqsService2
 
 router = APIRouter()
@@ -39,13 +39,4 @@ async def interact(body: FaqsDTO):
     """
     faqs_service = FaqsService2()    
     response = faqs_service.ask_faqs_agent(question=body.question, contract_type=body.contract_type, user_id=body.user_id)
-    
-    # response is a FaqsResponseDTO object, access properties with dot notation
-    # response.answer - gets the answer property
-    # response.question - gets the question property
-    return FaqsResponseDTO(
-        question=response.question if hasattr(response, 'question') else body.question,
-        answer=response.answer if hasattr(response, 'answer') else str(response),
-        link=None,  # or response.link if you uncomment it in the dataclass
-        point_of_contact=None  # or response.point_of_contact if you uncomment it in the dataclass
-    )
+    return response
