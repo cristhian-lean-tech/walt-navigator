@@ -16,6 +16,12 @@ PATHS = [
         "short_description": "Service interruption"
     },
     {
+        "path": "/my-board/services/time-off?action=otherServiceInterruption",
+        "description": "Solicitar día de la familia u otra interrupción especial, tiempo libre excepcional para contratistas, pausa breve sin afectar PTO, permiso extraordinario",
+        "user_type": "contractor",
+        "short_description": "Other service interruption"
+    },
+    {
         "path": "/my-board/services/hustle-for-the-muscle?action=create",
         "description": "Solicitar subsidio o reembolso de gimnasio, fitness membership, beneficio para mantenerse en forma, salud física, ejercicio, “hustle for the muscle”, fitness allowance",
         "user_type": "any",
@@ -28,12 +34,6 @@ PATHS = [
         "short_description": "PTO"
     },
     {
-        "path": "/my-board/services/time-off?action=otherServiceInterruption",
-        "description": "Solicitar día de la familia u otra interrupción especial, tiempo libre excepcional para contratistas, pausa breve sin afectar PTO, permiso extraordinario",
-        "user_type": "contractor",
-        "short_description": "Other service interruption"
-    },
-    {
         "path": "/my-board/services/brain-power?action=create",
         "description": "Solicitar beneficio educativo Brain Power: libro físico o digital, curso online, bono para material de estudio, recurso de aprendizaje, capacitación, upskilling",
         "user_type": "any",
@@ -44,6 +44,24 @@ PATHS = [
         "description": "Solicitar día libre de cumpleaños, birthday leave, celebrar mi cumpleaños sin trabajar, licencia pagada por cumpleaños",
         "user_type": "direct",
         "short_description": "Birthday"
+    },
+    {
+        "path": "/my-board/services/children-and-pets",
+        "description": "Registrar mascota o hijo en la empresa, register pet or child in the company, registro de mascota o hijo en la empresa, registro de mascota o hijo en la empresa, registro de mascota o hijo en la empresa",
+        "user_type": "any",
+        "short_description": "Children and pets"
+    },
+    {
+        "path": "/my-board/services/update-info?action=create",
+        "description": "Actualizar información personal: dirección, teléfono, correo electrónico, datos de contacto, perfil de empleado, update personal data",
+        "user_type": "any",
+        "short_description": "Update info"
+    },
+    {
+        "path": "/my-board/services/volunteering?action=create",
+        "description": "Registrarse como voluntario en una organización benéfica, volunteering registration, tiempo libre para ayudar a la comunidad, tiempo libre para causas sociales, tiempo libre para voluntariado, tiempo libre para causas benéficas",
+        "user_type": "any",
+        "short_description": "Volunteering"
     },
     {
         "path": "/my-board/services/special-occasions?action=create",
@@ -75,14 +93,9 @@ PATHS = [
         "user_type": "any",
         "short_description": "Growth plan"
     },
+    
     {
-        "path": "/my-board/services/update-info?action=create",
-        "description": "Actualizar información personal: dirección, teléfono, correo electrónico, datos de contacto, perfil de empleado, update personal data",
-        "user_type": "any",
-        "short_description": "Update info"
-    },
-    {
-        "path": "/my-board/services/it-support",
+        "path": "/my-board/services/it-support?from=navigation",
         "description": "Solicitar ayuda técnica general: problema con el equipo, software, conexión, actualizaciones, configuración, soporte técnico, IT support, technical issue",
         "user_type": "any",
         "short_description": "IT support"

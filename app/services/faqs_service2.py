@@ -1,8 +1,5 @@
 import os
-import asyncio
-from typing import Dict, Optional, Literal, Any
-from langchain_community.chat_models import ChatOpenAI
-from langchain_core.messages import HumanMessage, SystemMessage
+from typing import Optional, Literal, Any
 from langdetect import detect
 from app.dtos.faqs import IntentClassifierOutput
 from app.services.langchain import CompanyChatbotService
