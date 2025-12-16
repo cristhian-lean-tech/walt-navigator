@@ -115,7 +115,7 @@ faq_intent_classifier_prompt = PromptTemplate(
     template_format="jinja2",
     template="""You are an intent router for an internal company chatbot.
 Your job is to classify the user's message into exactly one of these intents:
-- IN_SCOPE: Company/work-related topics that can be handled using internal FAQs/processes (benefits, HR, onboarding, time off, salary increase, internal tools like WALT/My Board, Slack, Airtable forms, IT support, equipment/software/license requests, blocked websites, labor certificates, documentation requests).
+- IN_SCOPE: Company/work-related topics that can be handled using internal FAQs/processes (benefits, HR, onboarding, time off, salary increase, internal tools like WALT/My Board, Slack, Airtable forms, IT support, equipment/software/license requests, blocked websites, labor certificates, documentation requests, deel/via account creation, english classes, volunteering, special occasions, children and pets, update info).
 - OUT_OF_SCOPE: General knowledge or personal topics not related to the company/work (recipes, restaurants, travel, entertainment, general programming tutorials not tied to internal tools, etc.).
 - SMALL_TALK: Greetings, thanks, farewells, short conversational messages with no concrete request.
 
@@ -151,7 +151,7 @@ faq_small_talk_prompt = PromptTemplate(
     input_variables=["user_input"],
     template="""You are a company support virtual assistant. Your job is to help users with questions about benefits, policies, human resources, technical support, and other work-related topics.
     If the user talks about other subjects, respond politely with a brief conversation, then steer the discussion back to company-related topics and offer assistance.
-    IMPORTANT: Respond in the same language as the user.
+    IMPORTANT: Respond in the same language as the user (english or spanish).
     Mensaje usuario: 
     {user_input}
     """
