@@ -5,7 +5,7 @@ from contextlib import asynccontextmanager
 
 load_dotenv()
 
-from app.api.endpoints import faqs
+from app.api.endpoints import faqs, assistant
 from app.core.config import settings
 from app.config.init_db import load_faqs, load_paths
 from app.services.langchain import CompanyChatbotService
@@ -95,7 +95,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-#app.include_router(assistant.router, prefix="/assistant", tags=["assistant"])
+app.include_router(assistant.router, prefix="/assistant", tags=["assistant"])
 app.include_router(faqs.router, prefix="/faqs", tags=["faqs"])
 
 CompanyChatbotService()

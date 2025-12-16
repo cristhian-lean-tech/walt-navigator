@@ -11,7 +11,7 @@ PATHS = [
     },
     {
         "path": "/my-board/services/time-off?action=serviceInterruption",
-        "description": "Solicitar interrupción temporal de servicio o contrato, days off sin goce, pausa laboral por motivos personales, break de proyecto, suspensión breve de actividades",
+        "description": "Solicitar interrupción temporal de servicio o contrato, days off sin goce, pausa laboral por motivos personales, break de proyecto, suspensión breve de actividades, vacaciones",
         "user_type": "contractor",
         "short_description": "Service interruption"
     },
@@ -59,7 +59,7 @@ PATHS = [
     },
     {
         "path": "/my-board/services/volunteering?action=create",
-        "description": "Registrarse como voluntario en una organización benéfica, volunteering registration, tiempo libre para ayudar a la comunidad, tiempo libre para causas sociales, tiempo libre para voluntariado, tiempo libre para causas benéficas",
+        "description": "Registrarse como voluntario en una organización benéfica, volunteering registration",
         "user_type": "any",
         "short_description": "Volunteering"
     },
