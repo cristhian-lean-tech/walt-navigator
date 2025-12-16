@@ -288,7 +288,7 @@ If you’d like more information, feel free to reach out to Rodrigo Guerra on Sl
    },
    {
     "id": "q15",
-    "question": "Requesting Additional IT Equipment",
+    "question": "Requesting Additional IT Equipment, (pc, keyboard, mouse, headset, monitor, etc.)",
     "contractor_answer": "Use this after onboarding if you need extra accessories like a monitor, keyboard, mouse, or headset. Inform your leader or Account Manager, who must fill out the Change Request Form in Airtable. Once approved, IT will send or assign the requested item, and you must sign the delivery acknowledgment form.",
     "direct_answer": "Use this after onboarding if you need extra accessories like a monitor, keyboard, mouse, or headset. Inform your leader or Account Manager, who must fill out the Change Request Form in Airtable. Once approved, IT will send or assign the requested item, and you must sign the delivery acknowledgment form.",
     "role": "both",
@@ -298,7 +298,7 @@ If you’d like more information, feel free to reach out to Rodrigo Guerra on Sl
   },
   {
     "id": "q16",
-    "question": "Replacement of Equipment or Accessories Due to Malfunction",
+    "question": "Replacement of Equipment or Accessories Due to Malfunction, (pc, keyboard, mouse, headset, monitor, etc.)",
     "contractor_answer": "Use this if a device or accessory stops working properly. Create a ticket describing the issue. IT will diagnose the problem and replace the item if the damage is confirmed. You’ll sign an updated delivery acknowledgment form.",
     "direct_answer": "Use this if a device or accessory stops working properly. Create a ticket describing the issue. IT will diagnose the problem and replace the item if the damage is confirmed. You’ll sign an updated delivery acknowledgment form.",
     "role": "both",
@@ -308,7 +308,7 @@ If you’d like more information, feel free to reach out to Rodrigo Guerra on Sl
   },
   {
     "id": "q17",
-    "question": "Email Account Issues (Password or 2FA Authentication)",
+    "question": "Email Account Issues (Password or 2FA Authentication), email account blocked",
     "contractor_answer": "Use this when you forget your password, lose 2FA access, or your account gets locked. Create a ticket explaining your case. IT will verify your identity and send a temporary password or backup code. Change your password after login if temporary credentials are used.",
     "direct_answer": "Use this when you forget your password, lose 2FA access, or your account gets locked. Create a ticket explaining your case. IT will verify your identity and send a temporary password or backup code. Change your password after login if temporary credentials are used.",
     "role": "both",
@@ -318,7 +318,7 @@ If you’d like more information, feel free to reach out to Rodrigo Guerra on Sl
   },
   {
     "id": "q18",
-    "question": "Requesting an Equipment Upgrade or Improvement",
+    "question": "Requesting an Equipment Upgrade or Improvement, (pc, keyboard, mouse, headset, monitor, etc.)",
     "contractor_answer": "Use this when you need to increase RAM, change disk, switch to a higher model, or migrate from Windows to Mac. Talk to your leader or Account Manager, who must fill out the Change Request Form. IT will request approval and process the upgrade. You’ll sign the new acknowledgment form once completed.",
     "direct_answer": "Use this when you need to increase RAM, change disk, switch to a higher model, or migrate from Windows to Mac. Talk to your leader or Account Manager, who must fill out the Change Request Form. IT will request approval and process the upgrade. You’ll sign the new acknowledgment form once completed.",
     "role": "both",
@@ -338,7 +338,7 @@ If you’d like more information, feel free to reach out to Rodrigo Guerra on Sl
   },
   {
     "id": "q20",
-    "question": "Hardware Issues",
+    "question": "Hardware Issues, (laptop and peripherals)",
     "contractor_answer": "Use this when your equipment has visible physical damage (broken screen, damaged keys, non-functioning mouse, etc.). Create a ticket describing the issue. IT will check if it can be repaired; if not, it will be replaced following the malfunction replacement process.",
     "direct_answer": "Use this when your equipment has visible physical damage (broken screen, damaged keys, non-functioning mouse, etc.). Create a ticket describing the issue. IT will check if it can be repaired; if not, it will be replaced following the malfunction replacement process.",
     "role": "both",

@@ -110,41 +110,69 @@ faq_intent_prompt = PromptTemplate(
     template="Entrada: {input}\nClasificación: {output}"
 )
 
-faq_intent_classifier_prompt = PromptTemplate(  
-    input_variables=["user_message", "format_instructions"],  
+faq_intent_classifier_prompt = PromptTemplate(
+    input_variables=["user_message", "format_instructions"],
     template_format="jinja2",
-    template="""You are an intent router for an internal company chatbot.
-Your job is to classify the user's message into exactly one of these intents:
-- IN_SCOPE: Company/work-related topics that can be handled using internal FAQs/processes (benefits, HR, onboarding, time off, salary increase, internal tools like WALT/My Board, Slack, Airtable forms, IT support, equipment/software/license requests, blocked websites, labor certificates, documentation requests, deel/via account creation, english classes, volunteering, special occasions, children and pets, update info).
-- OUT_OF_SCOPE: General knowledge or personal topics not related to the company/work (recipes, restaurants, travel, entertainment, general programming tutorials not tied to internal tools, etc.).
-- SMALL_TALK: Greetings, thanks, farewells, short conversational messages with no concrete request.
+    template="""You are an intent router for an internal Lean Tech/WALT company chatbot.
+Classify the user's message into exactly ONE intent:
 
-Use the following rules:
-1) If the message is primarily a greeting/thanks/farewell and contains no actionable request, choose SMALL_TALK.
-2) If the message asks about internal company processes, benefits, HR topics, onboarding, time off, salary/fee increase, IT support, equipment/software/licenses, or internal tools (WALT/My Board/Slack/Airtable), choose IN_SCOPE.
-3) If the message requires public/external knowledge and is not about the company/work context, choose OUT_OF_SCOPE.
-4) If the message is ambiguous (e.g., "I need help", "I have an issue") but sounds work-related, choose IN_SCOPE and set needs_clarification=true.
+INTENTS
+- IN_SCOPE: Questions/requests about Lean Tech internal processes, benefits, HR/People topics, onboarding, Growth programs, time off/PTO/vacations, fee/salary increase, documentation/labor certificate, Deel/Via accounts, English Training Program (ETP), Brain Power, Hustle 4 the muscle (gym), children/parenthood bonus, referrals, monthly lunch, IT support (PC, hardware, software, licenses, blocked websites, email/2FA, email account blocked), and internal tools/links such as WALT, My Board, Slack, Airtable, Sophos.
+- OUT_OF_SCOPE: Anything that requires general/public knowledge or personal topics not tied to Lean Tech internal context (travel, restaurants, entertainment, general programming tutorials, medical/legal advice unrelated to Lean Tech processes, etc.).
+- SMALL_TALK: Greetings/thanks/farewells or purely social chat with no concrete request.
 
-Return a STRICT JSON object only (no markdown, no extra text) with ALL required fields:
-- intent: one of IN_SCOPE, OUT_OF_SCOPE, or SMALL_TALK
-- confidence: a float between 0.0 and 1.0
-- needs_clarification: a boolean
-- clarifying_question: a string or null (only if needs_clarification is true)
-- short_reason: a brief explanation (max 120 characters)
+KEY PRINCIPLE
+Decide based on the user's intent, not on whether the user explicitly mentions "Lean Tech" or "WALT" or "Lean solutions group.
+Spanglish and typos are expected.
+
+DECISION RULES (apply in order)
+1) SMALL_TALK:
+   If the message is primarily greeting/thanks/farewell (e.g., "hi", "hola", "thanks", "gracias", "good morning", "bye", "how are you?")
+   AND it contains no actionable request, choose SMALL_TALK.
+
+2) IN_SCOPE:
+   Choose IN_SCOPE if the user is asking for help that matches Lean Tech internal FAQs/processes, including (non-exhaustive):
+   - Time off / vacations / PTO / service interruption / rest days
+   - Benefits/incentives: Brain Power, gym (Hustle 4 the muscle / Smart Fit code), child/parenthood bonus, referral bonus, monthly lunch, GLIM, "benefits" in general
+   - Growth/learning: ETP/English classes, tech skills roadmap/technical plan, soft skills, career path/growth division
+   - HR/People/Admin: labor certificate, documentation requests, fee/salary increase process
+   - Onboarding/accounts: Deel/Via account creation
+   - IT support: PC not working, hardware damage, equipment replacement/upgrade, extra equipment, software/license/subscription requests, blocked websites, antivirus/Sophos unblock, email password/2FA/account locked
+   - Internal platforms/tools: WALT, My Board, Slack contacts, Airtable forms, internal links
+
+3) OUT_OF_SCOPE:
+   Choose OUT_OF_SCOPE if the request is not about Lean Tech internal processes and depends on external/public info.
+
+AMBIGUITY & CLARIFICATION
+- If the message is vague (e.g., "I need help", "I have an issue", "it doesn't work") and could reasonably be a Lean Tech internal matter, choose IN_SCOPE with needs_clarification=true.
+- If the message is vague but clearly personal/general (e.g., "I feel sick", "recommend a movie"), choose OUT_OF_SCOPE with needs_clarification=false.
+- If the message mixes small talk + a request, classify by the request (ignore the greeting).
+
+CLARIFYING QUESTION POLICY (only when needs_clarification=true)
+Ask ONE short question that would allow routing to the correct internal FAQ area.
+Prefer these categories: time off/benefits/growth/HR-docs/IT.
+Examples:
+- "Is this related to WALT/benefits/time off/HR documentation, or is it a general question?"
+- "Is the issue with your work equipment (PC/peripherals), email/2FA, or a blocked website?"
+
+OUTPUT REQUIREMENTS
+Return ONLY a STRICT JSON object (no markdown, no extra keys, no commentary) with ALL required fields:
+- intent: "IN_SCOPE" | "OUT_OF_SCOPE" | "SMALL_TALK"
+- confidence: float 0.0 to 1.0
+- needs_clarification: boolean
+- clarifying_question: string or null (must be null if needs_clarification is false)
+- short_reason: max 120 characters
 
 {{ format_instructions }}
 
-Confidence guidance:
-- 0.90–1.00: clearly matches one intent (explicit keywords like WALT, PTO, benefits, IT ticket, etc. or clear small talk)
-- 0.70–0.89: likely but not explicit
-- 0.40–0.69: ambiguous; set needs_clarification=true if IN_SCOPE ambiguity
-
-IMPORTANT: You MUST include all fields (intent, confidence, needs_clarification, short_reason, and clarifying_question if needed) in your JSON response.
+CONFIDENCE GUIDANCE
+- 0.90–1.00: explicit match (e.g., "WALT", "My Board", "PTO", "Brain Power", "IT ticket", "Deel", "Airtable", clear greeting)
+- 0.70–0.89: likely internal/external but not explicit
+- 0.40–0.69: ambiguous → if plausible IN_SCOPE, set needs_clarification=true
 
 User message:
 {{ user_message }}
 """
-    
 )
 
 faq_small_talk_prompt = PromptTemplate(

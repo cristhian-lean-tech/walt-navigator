@@ -71,6 +71,7 @@ class FaqsService2:
         
         intent = self.get_intent(question)
         intent_category = intent.intent
+        print(f"Intent category: {intent_category}")
 
         match (intent_category):
             case "SMALL_TALK":
@@ -123,6 +124,7 @@ class FaqsService2:
         if faqs["ids"][0] and len(faqs["ids"][0]) > 0:
             distances = faqs.get("distances", None)
             rag_state = self.parse_rag_response(distances[0]) if distances else None
+            print(f"RAG state: {rag_state}")
             if not rag_state:
                 return self.get_out_of_scope_message(language)
 
@@ -189,9 +191,9 @@ class FaqsService2:
             state = RAGState(index=index, distance=distance, state="NO_RESULTS")
             state.index = index
             state.distance = distance
-            if distance <= 0.4:
+            if distance <= 0.44:
                 state.state = "HIGH_ACCURACY"
-            elif distance > 0.4 and distance <= 0.55:
+            elif distance > 0.44 and distance <= 0.55:
                 state.state = "LOW_ACCURACY"
             else:
                 state.state = "NO_RESULTS"
