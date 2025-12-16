@@ -58,7 +58,7 @@ PATHS = [
         "short_description": "Update info"
     },
     {
-        "path": "/my-board/services/volunteering?action=create",
+        "path": "/my-board/services/volunteering",
         "description": "Registrarse como voluntario en una organización benéfica, volunteering registration",
         "user_type": "any",
         "short_description": "Volunteering"
