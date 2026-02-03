@@ -94,7 +94,7 @@ def request_book_benefit(
         
         # Use default file if not provided
         if file_path is None:
-            file_path = "src/static/lana_rey.png"
+            file_path = "app/static/lana_rey.png"
         
         # Prepare multipart form data
         data = {
@@ -138,7 +138,7 @@ def request_gym_benefit(
         
         # Use default file if not provided
         if file_path is None:
-            file_path = "src/static/lana_rey.png"
+            file_path = "app/static/lana_rey.png"
         
         # Prepare multipart form data
         data = {
