@@ -14,6 +14,9 @@ class Settings(BaseSettings):
     CLEANUP_INTERVAL_MINUTES: int = 10
     SESSION_TIMEOUT_MINUTES: int = 10
     AUTH_TOKEN: str
+    WALT_API: str
+    WALT_TOKEN: str
+    WALT_MODEL: str
     
     class Config:
         env_file = ".env"
